@@ -1,0 +1,1 @@
+This is the place for impl silo (emails, repositories, etc) and in/out layers (with ACLs most of the time).
