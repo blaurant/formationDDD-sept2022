@@ -1,77 +1,95 @@
 package com.restaurant.application;
 
 import DDD.framework.Objects;
-import com.restaurant.domain.Capacity;
 import com.restaurant.domain.Table;
 import com.restaurant.domain.TableRepository;
 import com.restaurant.domain.Tables;
-import io.vavr.collection.List;
-import org.assertj.core.api.Assertions;
-import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static com.restaurant.domain.Table.State.OCCUPIED;
+import static com.restaurant.domain.TablesTest.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class TableServiceTest {
 
-//    static Tables oneTable = new Tables(List.of(Table.of(1, 2)));
-//    static Tables someTables = new Tables(List.of(
-//            Table.of(1, 2),
-//            Table.of(2, 6)));
-
     @Test
     public void badSeatingCustomers() {
-        TableService tableService = new TableService(new InMemoryRepo(new Tables(List.empty())));
+        TableService tableService = createTableService(noTables);
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> tableService.seatingCustomers(0));
     }
 
+    @Test
+    public void loadByTableNumber() {
+        TableService tableService = createTableService(noTables);
+        assertThat(tableService.loadByTableNumber(2).isPresent())
+                .isFalse();
+    }
 
-//    @Test
-//    public void seatingCustomers() {
-//        TableService tableService = new TableService(new InMemoryRepo());
-//        // GIVEN
-//        tableService.setupRestaurantHall(tables);
-//        // WHEN
-//        Table table = tableService.seatingCustomers(2);
-//        // THEN
-//        Assertions.assertThat(tableService.loadByNumber(table.number()).status())
-//                .isEqualsTo(OCCUPIED);
-//    }
-//
-//    @Test
-//    public void seatingCustomersWithAdjust() {
-//        TableService tableService = new TableService(new InMemoryRepo());
-//        // GIVEN
-//        tableService.setupRestaurantHall(someTables);
-//        // WHEN
-//        Table table = tableService.seatingCustomers(5);
-//        // THEN
-//        Assertions.assertThat(tableService.loadByNumber(table.number()).capacity())
-//                .isEqualsTo(6);
-//        Assertions.assertThat(tableService.loadByNumber(table.number()).status())
-//                .isEqualsTo(OCCUPIED);
-//    }
+    @Test
+    public void seatingCustomers() {
+        TableService tableService = createTableService(oneTable);
+        // GIVEN
+        tableService.setupRestaurantHall(oneTable);
+        // WHEN
+        Table table = tableService.seatingCustomers(2);
+        // THEN
+        assertThat(tableService.loadByTableNumber(table.number()).get().state())
+                .isEqualTo(OCCUPIED);
+    }
+
+    private TableService createTableService(Tables tables) {
+        return new TableService(new InMemoryRepo(tables));
+    }
+
+    @Test
+    public void seatingCustomersWithAdjust() {
+        TableService tableService = createTableService(someTables);
+        // GIVEN
+        tableService.setupRestaurantHall(someTables);
+        // WHEN
+        Table table = tableService.seatingCustomers(5);
+        // THEN
+        assertThat(tableService.loadByTableNumber(table.number()).get().capacity()).isEqualTo(6);
+        assertThat(tableService.loadByTableNumber(table.number()).get().state()).isEqualTo(OCCUPIED);
+    }
+
 
     private class InMemoryRepo implements TableRepository {
 
-        private final Tables tables;
+        private Tables tables;
 
         InMemoryRepo(Tables tables) {
             this.tables = Objects.requireNotNull(tables);
         }
 
         @Override
-        public Table loadByNumber(int number) {
+        public Optional<Table> loadByTableNumber(int number) {
             return tables.filter(new Predicate<Table>() {
                 @Override
                 public boolean test(Table table) {
                     return number == table.number();
                 }
             }).first();
+        }
+
+        @Override
+        public void save(Table table) {
+            this.tables = tables.add(table);
+        }
+
+        @Override
+        public void saveAll(Tables tables) {
+            this.tables = new Tables(this.tables.tables.addAll(tables.tables));
+        }
+
+        @Override
+        public Tables loadAll() {
+            return tables;
         }
     }
 

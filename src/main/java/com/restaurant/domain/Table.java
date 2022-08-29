@@ -21,7 +21,7 @@ public class Table extends Entity<TableNumber> {
     }
 
     public static Table of(int number, int capacity) {
-        return new Table(new TableNumber(number), new Capacity(2));
+        return new Table(new TableNumber(number), new Capacity(capacity));
     }
 
     public int number() {

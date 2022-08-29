@@ -1,6 +1,15 @@
 package com.restaurant.domain;
 
+import java.util.Optional;
+
+@DDD.Repository
 public interface TableRepository {
 
-    Table loadByNumber(int number);
+    Tables loadAll();
+
+    Optional<Table> loadByTableNumber(int number);
+
+    void save(Table table);
+
+    void saveAll(Tables tables);
 }
