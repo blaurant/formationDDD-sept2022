@@ -8,7 +8,7 @@ import static com.restaurant.domain.Table.State.*;
 @DDD.Entity
 public class Table extends Entity<TableNumber> {
 
-    enum State {SET, OCCUPIED, FREED}
+    public enum State {SET, OCCUPIED, FREED}
 
     public final Capacity capacity;
 
