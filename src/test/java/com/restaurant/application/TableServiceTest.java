@@ -8,7 +8,6 @@ import com.restaurant.domain.Tables;
 import org.junit.Test;
 
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import static com.restaurant.domain.Table.State.*;
 import static com.restaurant.domain.TablesTest.*;
@@ -19,23 +18,23 @@ public class TableServiceTest {
 
     @Test
     public void badSeatingCustomers() {
-        TableService tableService = createTableService(noTables);
+        TableService tableService = createTableService();
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> tableService.seatingCustomers(0));
     }
 
     @Test
     public void loadByTableNumber() {
-        TableService tableService = createTableService(noTables);
+        TableService tableService = createTableService();
         assertThat(tableService.loadByTableNumber(2).isPresent())
                 .isFalse();
     }
 
     @Test
     public void seatingCustomers() {
-        TableService tableService = createTableService(oneTable);
+        TableService tableService = createTableService();
         // GIVEN
-        tableService.setupRestaurantHall(oneTable);
+        tableService.setupRestaurantHall(createOneTable());
         // WHEN
         Table table = tableService.seatingCustomers(2);
         // THEN
@@ -43,15 +42,11 @@ public class TableServiceTest {
                 .isEqualTo(OCCUPIED);
     }
 
-    private TableService createTableService(Tables tables) {
-        return new TableService(new InMemoryRepo(tables));
-    }
-
     @Test
     public void seatingCustomersWithAdjust() {
-        TableService tableService = createTableService(someTables);
+        TableService tableService = createTableService();
         // GIVEN
-        tableService.setupRestaurantHall(someTables);
+        tableService.setupRestaurantHall(createTables());
         // WHEN
         Table table = tableService.seatingCustomers(5);
         // THEN
@@ -63,9 +58,9 @@ public class TableServiceTest {
 
     @Test
     public void freeTable() {
-        TableService tableService = createTableService(someTables);
+        TableService tableService = createTableService();
         // GIVEN
-        tableService.setupRestaurantHall(someTables);
+        tableService.setupRestaurantHall(createTables());
         TableNumber tableNumber = tableService.seatingCustomers(5).getId();
         // WHEN
         tableService.freeTable(tableNumber);
@@ -76,9 +71,9 @@ public class TableServiceTest {
 
     @Test
     public void setTable() {
-        TableService tableService = createTableService(someTables);
+        TableService tableService = createTableService();
         // GIVEN
-        tableService.setupRestaurantHall(someTables);
+        tableService.setupRestaurantHall(createTables());
         TableNumber tableNumber = tableService.seatingCustomers(5).getId();
         tableService.freeTable(tableNumber);
         // WHEN
@@ -88,7 +83,11 @@ public class TableServiceTest {
                 .isEqualTo(SET);
     }
 
-    private class InMemoryRepo implements TableRepository {
+    private TableService createTableService() {
+        return new TableService(new InMemoryRepo(noTables));
+    }
+
+    private static class InMemoryRepo implements TableRepository {
 
         private Tables tables;
 
@@ -98,12 +97,7 @@ public class TableServiceTest {
 
         @Override
         public Optional<Table> loadByTableNumber(int number) {
-            return tables.filter(new Predicate<Table>() {
-                @Override
-                public boolean test(Table table) {
-                    return number == table.number();
-                }
-            }).first();
+            return tables.filter(table -> number == table.number()).first();
         }
 
         @Override

@@ -1,9 +1,6 @@
 package com.restaurant.application;
 
-import com.restaurant.domain.Capacity;
-import com.restaurant.domain.Table;
-import com.restaurant.domain.TableRepository;
-import com.restaurant.domain.Tables;
+import com.restaurant.domain.*;
 
 import java.util.Optional;
 
@@ -19,6 +16,7 @@ public class TableService {
         this.tableRepository = requireNotNull(tableRepository);
     }
 
+    @DDD.Scenario
     public Table seatingCustomers(int numberOfCustomer) {
         checkNumberOfCustomer(numberOfCustomer);
         Table table = tableRepository.loadAll()
@@ -29,6 +27,22 @@ public class TableService {
         table.assign();
         tableRepository.save(table);
         return table;
+    }
+
+    @DDD.Scenario
+    public void freeTable(TableNumber tableNumber) {
+        Table table = loadByTableNumber(tableNumber.value)
+                .orElseThrow(() -> new TableServiceException("no Table " + tableNumber.value));
+        table.clear();
+        tableRepository.save(table);
+    }
+
+    @DDD.Scenario
+    public void setTable(TableNumber tableNumber) {
+        Table table = loadByTableNumber(tableNumber.value)
+                .orElseThrow(() -> new TableServiceException("no Table " + tableNumber.value));
+        table.set();
+        tableRepository.save(table);
     }
 
     private int adjust(int numberOfCustomer) {
@@ -42,11 +56,11 @@ public class TableService {
             throw new IllegalArgumentException("number of customer must be less then " + MAX_CAPACITY);
     }
 
-    public void setupRestaurantHall(Tables tables) {
+    void setupRestaurantHall(Tables tables) {
         tableRepository.saveAll(tables);
     }
 
-    public Optional<Table> loadByTableNumber(int number) {
+    Optional<Table> loadByTableNumber(int number) {
         return tableRepository.loadByTableNumber(number);
     }
 }
