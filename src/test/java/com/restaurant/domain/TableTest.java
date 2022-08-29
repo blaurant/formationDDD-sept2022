@@ -1,8 +1,8 @@
 package com.restaurant.domain;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import static com.restaurant.domain.Table.State.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -24,7 +24,7 @@ public class TableTest {
         Table table = Table.of(1, 2);
         assertThat(table.number()).isEqualTo(1);
         assertThat(table.capacity()).isEqualTo(2);
-        assertThat(table.state()).isEquals(Table.SET);
+        assertThat(table.state()).isEqualTo(SET);
     }
 
     @Test
@@ -35,26 +35,26 @@ public class TableTest {
 
     @Test
     public void assignTest() {
-        assertThat(Table.of(1,2)
+        assertThat(Table.of(1, 2)
                 .assign()
-                .state()).isEquals(Table.ACCUPIED);
+                .state()).isEqualTo(OCCUPIED);
     }
 
     @Test
     public void clearTest() {
-        assertThat(Table.of(1,2)
+        assertThat(Table.of(1, 2)
                 .assign()
                 .clear()
-                .state()).isEquals(Table.FREED);
+                .state()).isEqualTo(FREED);
     }
 
     @Test
     public void setTest() {
-        assertThat(Table.of(1,2)
+        assertThat(Table.of(1, 2)
                 .assign()
                 .clear()
                 .set()
-                .state()).isEquals(Table.SET);
+                .state()).isEqualTo(SET);
     }
 }
 
