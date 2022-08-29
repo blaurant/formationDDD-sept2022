@@ -2,15 +2,11 @@ package com.restaurant.domain;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import sun.tools.jconsole.Tab;
 
-import static DDD.framework.Integers.requireBetween;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * First we test identity, then invariants, than life cycle.
- *
  */
 public class TableTest {
 
