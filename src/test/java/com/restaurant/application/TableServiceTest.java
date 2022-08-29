@@ -2,6 +2,7 @@ package com.restaurant.application;
 
 import DDD.framework.Objects;
 import com.restaurant.domain.Table;
+import com.restaurant.domain.TableNumber;
 import com.restaurant.domain.TableRepository;
 import com.restaurant.domain.Tables;
 import org.junit.Test;
@@ -9,7 +10,7 @@ import org.junit.Test;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import static com.restaurant.domain.Table.State.OCCUPIED;
+import static com.restaurant.domain.Table.State.*;
 import static com.restaurant.domain.TablesTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -54,10 +55,38 @@ public class TableServiceTest {
         // WHEN
         Table table = tableService.seatingCustomers(5);
         // THEN
-        assertThat(tableService.loadByTableNumber(table.number()).get().capacity()).isEqualTo(6);
-        assertThat(tableService.loadByTableNumber(table.number()).get().state()).isEqualTo(OCCUPIED);
+        assertThat(tableService.loadByTableNumber(table.number()).get().capacity())
+                .isEqualTo(6);
+        assertThat(tableService.loadByTableNumber(table.number()).get().state())
+                .isEqualTo(OCCUPIED);
     }
 
+    @Test
+    public void freeTable() {
+        TableService tableService = createTableService(someTables);
+        // GIVEN
+        tableService.setupRestaurantHall(someTables);
+        TableNumber tableNumber = tableService.seatingCustomers(5).getId();
+        // WHEN
+        tableService.freeTable(tableNumber);
+        // THEN
+        assertThat(tableService.loadByTableNumber(tableNumber.value).get().state())
+                .isEqualTo(FREED);
+    }
+
+    @Test
+    public void setTable() {
+        TableService tableService = createTableService(someTables);
+        // GIVEN
+        tableService.setupRestaurantHall(someTables);
+        TableNumber tableNumber = tableService.seatingCustomers(5).getId();
+        tableService.freeTable(tableNumber);
+        // WHEN
+        tableService.setTable(tableNumber);
+        // THEN
+        assertThat(tableService.loadByTableNumber(tableNumber.value).get().state())
+                .isEqualTo(SET);
+    }
 
     private class InMemoryRepo implements TableRepository {
 
