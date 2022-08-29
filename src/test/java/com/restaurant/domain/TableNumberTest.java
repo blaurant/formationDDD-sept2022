@@ -1,6 +1,9 @@
 package com.restaurant.domain;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import static com.restaurant.domain.TableNumber.TOTAL_TABLE;
 
 public class TableNumberTest {
 
@@ -11,7 +14,11 @@ public class TableNumberTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void numberTooBig() {
-        new TableNumber(TOTAL_TABLE + 1);
+        new TableNumber(TOTAL_TABLE + 2);
     }
 
+    @Test
+    public void numberOk() {
+        Assertions.assertThat(new TableNumber(1).number).isEqualTo(1);
+    }
 }
