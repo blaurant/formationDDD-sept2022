@@ -1,1 +1,5 @@
-This is the place for scenarii
+- This is the place for scenarii
+- Code in this layer is procedural
+- Organize this layer in scenarii family
+- Transactions take place in this layer
+- Scenarii methods takes domain objects and return domain objects

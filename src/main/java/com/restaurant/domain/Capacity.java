@@ -7,6 +7,7 @@ import io.vavr.collection.List;
 public class Capacity extends SimpleValueObject<Integer> {
 
     public static List<Integer> CAPACITY_LIST = List.of(2, 4, 6);
+    public static int MAX_CAPACITY = CAPACITY_LIST.last();
 
     public Capacity(int capacity) {
         super(requiredInList(capacity, CAPACITY_LIST));
