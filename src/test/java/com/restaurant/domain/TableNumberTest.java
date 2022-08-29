@@ -19,6 +19,6 @@ public class TableNumberTest {
 
     @Test
     public void numberOk() {
-        Assertions.assertThat(new TableNumber(1).number).isEqualTo(1);
+        Assertions.assertThat(new TableNumber(1).value).isEqualTo(1);
     }
 }
