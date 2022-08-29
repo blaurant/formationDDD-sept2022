@@ -3,6 +3,7 @@ package com.restaurant.domain;
 import DDD.framework.SimpleValueObject;
 import io.vavr.collection.List;
 
+@DDD.VO
 public class Capacity extends SimpleValueObject<Integer> {
 
     public static List<Integer> CAPACITY_LIST = List.of(2, 4, 6);

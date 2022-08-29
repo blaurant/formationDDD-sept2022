@@ -5,6 +5,7 @@ import DDD.framework.Objects;
 
 import static com.restaurant.domain.Table.State.*;
 
+@DDD.Entity
 public class Table extends Entity<TableNumber> {
 
     enum State {SET, OCCUPIED, FREED}
@@ -35,18 +36,21 @@ public class Table extends Entity<TableNumber> {
         return state;
     }
 
+    @DDD.EntityCommand
     public Table assign() {
         if (isInState(SET))
             this.state = OCCUPIED;
         return this;
     }
 
+    @DDD.EntityCommand
     public Table clear() {
         if (isInState(OCCUPIED))
             this.state = FREED;
         return this;
     }
 
+    @DDD.EntityCommand
     public Table set() {
         if (isInState(FREED))
             this.state = SET;

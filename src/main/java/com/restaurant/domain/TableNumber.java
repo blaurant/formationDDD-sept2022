@@ -7,6 +7,7 @@ import static DDD.framework.Integers.requireBetween;
 /**
  * Tables number are starting from 1 to TOTAL_TABLE included
  */
+@DDD.VO
 public class TableNumber extends SimpleValueObject<Integer> {
 
     public static final int TOTAL_TABLE = 20;
