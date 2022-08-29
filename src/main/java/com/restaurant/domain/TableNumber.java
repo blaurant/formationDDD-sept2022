@@ -12,6 +12,6 @@ public class TableNumber extends SimpleValueObject<Integer> {
     public static final int TOTAL_TABLE = 20;
 
     public TableNumber(int i) {
-        super(requireBetween(i, 1, TOTAL_TABLE+1));
+        super(requireBetween(i, 1, TOTAL_TABLE + 1));
     }
 }

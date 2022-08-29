@@ -10,15 +10,13 @@ public class CapacityTest {
     @Test
     public void badCapacityBuildTest() {
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> new Capacity(null));
-        assertThatExceptionOfType(IllegalCapacityException.class)
                 .isThrownBy(() -> new Capacity(1));
-        assertThatExceptionOfType(CapacityExceededException.class)
-                .isThrownBy(() -> new Capacity(6));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> new Capacity(8));
     }
 
     @Test
     public void buildTest() {
-        Assertions.assertThat(new Capacity(2).value).equals(2);
+        Assertions.assertThat(new Capacity(2).value).isEqualTo(2);
     }
 }
