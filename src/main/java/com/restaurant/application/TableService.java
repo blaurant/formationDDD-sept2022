@@ -17,7 +17,12 @@ public class TableService {
     }
 
     @DDD.Scenario
-    public Table seatingCustomers(int numberOfCustomer) {
+    public Tables getAllTables() {
+        return tableRepository.loadAll();
+    }
+
+    @DDD.Scenario
+    public Table place(int numberOfCustomer) {
         checkNumberOfCustomer(numberOfCustomer);
         Table table = tableRepository.loadAll()
                 .onlyWithState(SET)
@@ -30,19 +35,21 @@ public class TableService {
     }
 
     @DDD.Scenario
-    public void freeTable(TableNumber tableNumber) {
+    public Table freeTable(TableNumber tableNumber) {
         Table table = loadByTableNumber(tableNumber.value)
                 .orElseThrow(() -> new TableServiceException("no Table " + tableNumber.value));
         table.clear();
         tableRepository.save(table);
+        return table;
     }
 
     @DDD.Scenario
-    public void setTable(TableNumber tableNumber) {
+    public Table setTable(TableNumber tableNumber) {
         Table table = loadByTableNumber(tableNumber.value)
                 .orElseThrow(() -> new TableServiceException("no Table " + tableNumber.value));
         table.set();
         tableRepository.save(table);
+        return table;
     }
 
     private int adjust(int numberOfCustomer) {
@@ -62,5 +69,10 @@ public class TableService {
 
     Optional<Table> loadByTableNumber(int number) {
         return tableRepository.loadByTableNumber(number);
+    }
+
+    public Table getTable(TableNumber tableNumber) {
+        return tableRepository.loadByTableNumber(tableNumber.value)
+                .orElseThrow(()-> new TableServiceException("no table " + tableNumber.value));
     }
 }

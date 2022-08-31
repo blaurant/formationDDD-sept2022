@@ -1,13 +1,9 @@
 package com.restaurant.application;
 
-import DDD.framework.Objects;
 import com.restaurant.domain.Table;
 import com.restaurant.domain.TableNumber;
-import com.restaurant.domain.TableRepository;
-import com.restaurant.domain.Tables;
+import com.restaurant.infrastructure.repository.InMemoryTableRepo;
 import org.junit.Test;
-
-import java.util.Optional;
 
 import static com.restaurant.domain.Table.State.*;
 import static com.restaurant.domain.TablesTest.*;
@@ -20,7 +16,7 @@ public class TableServiceTest {
     public void badSeatingCustomers() {
         TableService tableService = createTableService();
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> tableService.seatingCustomers(0));
+                .isThrownBy(() -> tableService.place(0));
     }
 
     @Test
@@ -36,7 +32,7 @@ public class TableServiceTest {
         // GIVEN
         tableService.setupRestaurantHall(createOneTable());
         // WHEN
-        Table table = tableService.seatingCustomers(2);
+        Table table = tableService.place(2);
         // THEN
         assertThat(tableService.loadByTableNumber(table.number()).get().state())
                 .isEqualTo(OCCUPIED);
@@ -48,7 +44,7 @@ public class TableServiceTest {
         // GIVEN
         tableService.setupRestaurantHall(createTables());
         // WHEN
-        Table table = tableService.seatingCustomers(5);
+        Table table = tableService.place(5);
         // THEN
         assertThat(tableService.loadByTableNumber(table.number()).get().capacity())
                 .isEqualTo(6);
@@ -61,7 +57,7 @@ public class TableServiceTest {
         TableService tableService = createTableService();
         // GIVEN
         tableService.setupRestaurantHall(createTables());
-        TableNumber tableNumber = tableService.seatingCustomers(5).getId();
+        TableNumber tableNumber = tableService.place(5).getId();
         // WHEN
         tableService.freeTable(tableNumber);
         // THEN
@@ -74,7 +70,7 @@ public class TableServiceTest {
         TableService tableService = createTableService();
         // GIVEN
         tableService.setupRestaurantHall(createTables());
-        TableNumber tableNumber = tableService.seatingCustomers(5).getId();
+        TableNumber tableNumber = tableService.place(5).getId();
         tableService.freeTable(tableNumber);
         // WHEN
         tableService.setTable(tableNumber);
@@ -84,36 +80,7 @@ public class TableServiceTest {
     }
 
     private TableService createTableService() {
-        return new TableService(new InMemoryRepo(noTables));
-    }
-
-    private static class InMemoryRepo implements TableRepository {
-
-        private Tables tables;
-
-        InMemoryRepo(Tables tables) {
-            this.tables = Objects.requireNotNull(tables);
-        }
-
-        @Override
-        public Optional<Table> loadByTableNumber(int number) {
-            return tables.filter(table -> number == table.number()).first();
-        }
-
-        @Override
-        public void save(Table table) {
-            this.tables = tables.add(table);
-        }
-
-        @Override
-        public void saveAll(Tables tables) {
-            this.tables = new Tables(this.tables.tables.addAll(tables.tables));
-        }
-
-        @Override
-        public Tables loadAll() {
-            return tables;
-        }
+        return new TableService(new InMemoryTableRepo(noTables));
     }
 
 }
