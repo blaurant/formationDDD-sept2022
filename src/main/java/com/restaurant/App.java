@@ -12,7 +12,7 @@ public class App {
     public static void main(String[] args) {
         Vertx vertx = Vertx.vertx();
         TableService tableService = new TableService(new InMemoryTableRepo(tables));
-        new RestService(vertx, tableService).start();
+        new RestService(vertx, tableService, 8081).start();
     }
 
     private static final Tables tables = new Tables(HashSet.of(

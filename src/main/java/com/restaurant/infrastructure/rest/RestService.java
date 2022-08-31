@@ -13,9 +13,11 @@ import static java.lang.Integer.parseInt;
 public class RestService extends AbstractVerticle {
 
     private final TableService tableService;
+    private final int port;
 
-    public RestService(Vertx vertx, TableService tableService) {
+    public RestService(Vertx vertx, TableService tableService, int port) {
         this.vertx = vertx;
+        this.port = port;
         this.tableService = tableService;
     }
 
@@ -37,6 +39,6 @@ public class RestService extends AbstractVerticle {
         router.get("/tables/set/:tableNumber")
                 .respond(ctx -> Future.succeededFuture(
                         tableToDto(tableService.setTable(tableNumber(ctx.pathParam("tableNumber"))))));
-        server.requestHandler(router).listen(8080);
+        server.requestHandler(router).listen(port);
     }
 }
