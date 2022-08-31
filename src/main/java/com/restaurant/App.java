@@ -16,9 +16,9 @@ public class App {
     }
 
     private static final Tables tables = new Tables(HashSet.of(
-                Table.of(1, 2),
-                Table.of(2, 6),
-                Table.of(3, 4),
-                Table.of(4, 2),
-                Table.of(5, 2)));
+            Table.of(1, 2),
+            Table.of(2, 6),
+            Table.of(3, 4),
+            Table.of(4, 2),
+            Table.of(5, 2)));
 }

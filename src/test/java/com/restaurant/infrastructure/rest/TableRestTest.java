@@ -1,27 +1,5 @@
 package com.restaurant.infrastructure.rest;
 
-import com.restaurant.application.TableService;
-import com.restaurant.domain.Table;
-import com.restaurant.domain.Tables;
-import com.restaurant.infrastructure.repository.InMemoryTableRepo;
-import io.vavr.collection.HashSet;
-import io.vertx.core.Vertx;
-import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.unit.junit.VertxUnitRunner;
-import io.vertx.ext.web.client.WebClient;
-import io.vertx.junit5.VertxExtension;
-import io.vertx.junit5.VertxTestContext;
-import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-
-import java.util.concurrent.TimeUnit;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 //@ExtendWith(VertxExtension.class)
 public class TableRestTest {
 //

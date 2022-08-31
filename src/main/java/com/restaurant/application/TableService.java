@@ -73,6 +73,6 @@ public class TableService {
 
     public Table getTable(TableNumber tableNumber) {
         return tableRepository.loadByTableNumber(tableNumber.value)
-                .orElseThrow(()-> new TableServiceException("no table " + tableNumber.value));
+                .orElseThrow(() -> new TableServiceException("no table " + tableNumber.value));
     }
 }
