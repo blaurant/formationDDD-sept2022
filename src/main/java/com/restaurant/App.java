@@ -3,15 +3,18 @@ package com.restaurant;
 import com.restaurant.application.TableService;
 import com.restaurant.domain.Table;
 import com.restaurant.domain.Tables;
+import com.restaurant.infrastructure.bus.VertxBus;
 import com.restaurant.infrastructure.repository.InMemoryTableRepo;
 import com.restaurant.infrastructure.rest.RestService;
 import io.vavr.collection.HashSet;
 import io.vertx.core.Vertx;
 
+import static com.restaurant.infrastructure.bus.VertxBus.createVertxBusWithGenCodec;
+
 public class App {
     public static void main(String[] args) {
         Vertx vertx = Vertx.vertx();
-        TableService tableService = new TableService(new InMemoryTableRepo(tables));
+        TableService tableService = new TableService(new InMemoryTableRepo(tables), createVertxBusWithGenCodec(vertx));
         new RestService(vertx, tableService, 8081).start();
     }
 

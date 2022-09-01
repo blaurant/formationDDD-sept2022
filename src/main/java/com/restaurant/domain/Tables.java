@@ -12,6 +12,8 @@ import static DDD.framework.Objects.requireNotNull;
 @VO
 public class Tables {
 
+    public static Tables noTables = new Tables(HashSet.empty());
+
     public final HashSet<Table> tables;
 
     public Tables(HashSet<Table> tables) {

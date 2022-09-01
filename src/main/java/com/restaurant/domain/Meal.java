@@ -12,6 +12,8 @@ import static com.restaurant.domain.Orders.emptyOrders;
 @DDD.Entity
 public class Meal extends Entity<Meal.Id> {
 
+    public static final String MEAL_CHANNEL = "MEAL_CHANNEL";
+
     public static class Id extends EntityId<UUID> {
 
         public Id(UUID id) {
@@ -30,17 +32,18 @@ public class Meal extends Entity<Meal.Id> {
 
     public enum State {
         ORDER_PLACED, ORDER_READY, ORDER_SERVED, BILL_EDITED, PAID
-
     }
 
+    public final TableNumber tableNumber;
     public Orders orders = emptyOrders;
 
     private State state;
     private Bill bill;
 
-    public Meal(Id id, Order order) {
+    public Meal(Id id, TableNumber tableNumber, Order order) {
         super(id);
         requireNotNull(order);
+        this.tableNumber = tableNumber;
         this.orders = orders.append(order);
         this.state = ORDER_PLACED;
     }

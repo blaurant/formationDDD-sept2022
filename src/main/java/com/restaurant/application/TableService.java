@@ -1,5 +1,6 @@
 package com.restaurant.application;
 
+import DDD.framework.Bus;
 import com.restaurant.domain.*;
 
 import java.util.Optional;
@@ -11,9 +12,11 @@ import static com.restaurant.domain.Table.State.SET;
 public class TableService {
 
     private final TableRepository tableRepository;
+    private final Bus bus;
 
-    public TableService(TableRepository tableRepository) {
+    public TableService(TableRepository tableRepository, Bus bus) {
         this.tableRepository = requireNotNull(tableRepository);
+        this.bus = bus;
     }
 
     @DDD.Scenario
@@ -31,6 +34,7 @@ public class TableService {
                 .orElseThrow(() -> new TableServiceException("can not seat customers"));
         table.assign();
         tableRepository.save(table);
+        bus.publish(new TableOccupiedEvent(table.number()));
         return table;
     }
 
@@ -40,6 +44,7 @@ public class TableService {
                 .orElseThrow(() -> new TableServiceException("no Table " + tableNumber.value));
         table.clear();
         tableRepository.save(table);
+        bus.publish(new TableFreedEvent(table.number()));
         return table;
     }
 
@@ -49,6 +54,7 @@ public class TableService {
                 .orElseThrow(() -> new TableServiceException("no Table " + tableNumber.value));
         table.set();
         tableRepository.save(table);
+        bus.publish(new TableSetEvent(table.number()));
         return table;
     }
 

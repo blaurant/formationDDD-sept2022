@@ -1,8 +1,7 @@
 package com.restaurant.application;
 
-import com.restaurant.domain.Meal;
-import com.restaurant.domain.MealRepository;
-import com.restaurant.domain.Order;
+import DDD.framework.Bus;
+import com.restaurant.domain.*;
 
 import java.util.Optional;
 
@@ -10,10 +9,12 @@ import static DDD.framework.Objects.requireNotNull;
 
 public class MealService {
 
-    private MealRepository mealRepository;
+    private final MealRepository mealRepository;
+    private final Bus bus;
 
-    public MealService(MealRepository mealRepository) {
+    public MealService(MealRepository mealRepository, Bus bus) {
         this.mealRepository = mealRepository;
+        this.bus = bus;
     }
 
     @DDD.Scenario
@@ -22,9 +23,9 @@ public class MealService {
     }
 
     @DDD.Scenario
-    public Meal.Id order(Order order) {
+    public Meal.Id order(TableNumber tableNumber, Order order) {
         requireNotNull(order);
-        Meal meal = new Meal(Meal.Id.generate(), order);
+        Meal meal = new Meal(Meal.Id.generate(), tableNumber, order);
         mealRepository.save(meal);
         return meal.getId();
     }
@@ -78,6 +79,7 @@ public class MealService {
         Meal meal = loadMeal(mealId);
         meal.pay();
         mealRepository.save(meal);
+        bus.publish(new MealPaidEvent(mealId.asString(), meal.tableNumber.value));
         return meal.getId();
     }
 }

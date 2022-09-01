@@ -1,5 +1,6 @@
 package com.restaurant.application;
 
+import DDD.framework.Bus;
 import com.restaurant.domain.Table;
 import com.restaurant.domain.TableNumber;
 import com.restaurant.infrastructure.repository.InMemoryTableRepo;
@@ -80,7 +81,7 @@ public class TableServiceTest {
     }
 
     private TableService createTableService() {
-        return new TableService(new InMemoryTableRepo(noTables));
+        return new TableService(new InMemoryTableRepo(noTables), new ConsoleBus());
     }
 
 }

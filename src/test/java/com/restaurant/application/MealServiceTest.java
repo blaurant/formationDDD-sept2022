@@ -1,5 +1,6 @@
 package com.restaurant.application;
 
+import DDD.framework.Bus;
 import com.restaurant.domain.Meal;
 import com.restaurant.domain.Order;
 import com.restaurant.domain.TableNumber;
@@ -17,7 +18,7 @@ public class MealServiceTest {
         // GIVEN
         MealService mealService = createMealService();
         // WHEN
-        Meal.Id mealID = mealService.order(new Order(new TableNumber(1), "pizza"));
+        Meal.Id mealID = mealService.order(new TableNumber(1), new Order(new TableNumber(1), "pizza"));
         // THEN
         assertThat(mealService.loadByID(mealID).get().state())
                 .isEqualTo(ORDER_PLACED);
@@ -27,7 +28,7 @@ public class MealServiceTest {
     public void orderReady() {
         // GIVEN
         MealService mealService = createMealService();
-        Meal.Id mealId = mealService.order(new Order(new TableNumber(1), "pizza"));
+        Meal.Id mealId = mealService.order(new TableNumber(1), new Order(new TableNumber(1), "pizza"));
         // WHEN
         mealId = mealService.readyOrder(mealId);
         // THEN
@@ -39,7 +40,7 @@ public class MealServiceTest {
     public void orderServed() {
         // GIVEN
         MealService mealService = createMealService();
-        Meal.Id mealId = mealService.order(new Order(new TableNumber(1), "pizza"));
+        Meal.Id mealId = mealService.order(new TableNumber(1), new Order(new TableNumber(1), "pizza"));
         mealId = mealService.readyOrder(mealId);
         // WHEN
         mealId = mealService.serveOrder(mealId);
@@ -52,7 +53,7 @@ public class MealServiceTest {
     public void twoOrderServed() {
         // GIVEN
         MealService mealService = createMealService();
-        Meal.Id mealId = mealService.order(new Order(new TableNumber(1), "pasta"));
+        Meal.Id mealId = mealService.order(new TableNumber(1), new Order(new TableNumber(1), "pasta"));
         mealId = mealService.readyOrder(mealId);
         mealId = mealService.serveOrder(mealId);
         mealId = mealService.order(mealId, new Order(new TableNumber(1), "pizza"));
@@ -69,7 +70,7 @@ public class MealServiceTest {
     public void billPlease() {
         // GIVEN
         MealService mealService = createMealService();
-        Meal.Id mealId = mealService.order(new Order(new TableNumber(1), "pasta"));
+        Meal.Id mealId = mealService.order(new TableNumber(1), new Order(new TableNumber(1), "pasta"));
         mealService.readyOrder(mealId);
         mealService.serveOrder(mealId);
         mealService.order(mealId, new Order(new TableNumber(1), "pizza"));
@@ -87,7 +88,7 @@ public class MealServiceTest {
     public void pay() {
         // GIVEN
         MealService mealService = createMealService();
-        Meal.Id mealId = mealService.order(new Order(new TableNumber(1), "pasta"));
+        Meal.Id mealId = mealService.order(new TableNumber(1), new Order(new TableNumber(1), "pasta"));
         mealService.readyOrder(mealId);
         mealService.serveOrder(mealId);
         mealService.order(mealId, new Order(new TableNumber(1), "pizza"));
@@ -102,6 +103,6 @@ public class MealServiceTest {
     }
 
     private MealService createMealService() {
-        return new MealService(new InMemoryMealRepo(noMeals));
+        return new MealService(new InMemoryMealRepo(noMeals), new ConsoleBus());
     }
 }

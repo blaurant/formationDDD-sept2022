@@ -8,7 +8,10 @@ import static com.restaurant.domain.Table.State.*;
 @DDD.Entity
 public class Table extends Entity<TableNumber> {
 
+    public static final String TABLE_CHANNEL = "TABLE_CHANNEL";
     public enum State {SET, OCCUPIED, FREED}
+
+
 
     public final Capacity capacity;
 
